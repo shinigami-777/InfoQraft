@@ -1,6 +1,4 @@
 venv/
 .env
-extra-requirements.txt
-pandoc-3.7.0.2-1-amd64.deb
 .streamlit
 __pycache__
