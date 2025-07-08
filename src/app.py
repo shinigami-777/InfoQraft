@@ -6,15 +6,42 @@ from question_format import TestModel
 from all_loaders import Loaders
 import tempfile
 import os
+import base64
 
+def get_base64_image(image_path):
+    with open(image_path, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
 
+img_base64 = get_base64_image("media/bkg.jpeg")
 
-st.set_page_config(page_title="Digi", page_icon="🤖")
+# injecting the background image after converting it to base 64
+st.markdown(f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/jpeg;base64,{img_base64}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }}
+
+    .block-container {{
+        background-color: rgba(79, 186, 232, 0.50);
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }}
+    </style>
+""", unsafe_allow_html=True)
+
+st.set_page_config(page_title="InfoQraft", page_icon="👓")
 
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
 
 # Step 1: Data Entry Card
-st.title("Dynamic Question Generator")
+st.title("InfoQraft: Test your preparation.")
 tab1, tab2, tab3 = st.tabs(["Data Entry", "Question Generation", "Question Review"])
 
 data_types_dict = {"pdf":"pdf","mp3":"audio","wav":"audio","enex":"enex","mp4":"mp4","docx":"docx","png":"image","jpg":"image","pptx":"pptx","epub":"epub","txt":"txt"}
@@ -85,15 +112,10 @@ def load_components(key_id):
     file_upload.file_uploader("Upload File", type=["pdf","txt","mp3","wav","enex","mp4","docx","png","jpg","pptx","epub"],
                                      accept_multiple_files=True, key=str(key_id)+"files")
     url_upload.text_input("URL",
-                               placeholder="https://medium.com/@dumanmesut/building-autonomous-multi-agent-systems-with-crewai-1a3b3a348271", key=str(key_id)+"url")
-    youtube_upload.text_input("Youtube URL", placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ", key=str(key_id)+"youtube")
-    wikipedia_search.text_input("Wikipedia Search", placeholder="Artificial Intelligence", key=str(key_id)+"wiki")
-    text_input.text_area("Direct Text Input", placeholder="Langchain is a platform that provides a suite of tools for developers to build and deploy AI models. "
-                                                               "The platform is designed to be easy to use and flexible, allowing developers to create custom models "
-                                                               "for a wide range of applications. Langchain provides a range of pre-trained models that can be used "
-                                                               "out of the box, as well as tools for training custom models on your own data. The platform is built on "
-                                                               "top of the latest research in AI and machine learning, and is designed to be scalable and efficient, "
-                                                               "allowing developers to build and deploy models quickly and easily.", key=str(key_id)+"text")
+                               placeholder="https://xyz.com", key=str(key_id)+"url")
+    youtube_upload.text_input("Youtube URL", placeholder="https://www.youtube.com/watch?v=rickroll", key=str(key_id)+"youtube")
+    wikipedia_search.text_input("Wikipedia Search", placeholder="World War II", key=str(key_id)+"wiki")
+    text_input.text_area("Direct Text Input", placeholder="AI can do blah blah blah.", key=str(key_id)+"text")
 with tab1:
     st.subheader("Enter Data")
     file_upload = st.empty()
